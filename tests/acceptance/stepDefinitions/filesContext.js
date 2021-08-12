@@ -1232,7 +1232,7 @@ When('the user downloads file/folder {string} using the webUI', function (file) 
 })
 
 Then('file {string} should be downloaded successfully', function(file) {
-  client.pause(5000) // We should waiting for the file to download
+  client.pause(2000) // We should waiting for the file to download
   return client.checkFileExists(path.join(__dirname, '/../download/', file))
 })
 
