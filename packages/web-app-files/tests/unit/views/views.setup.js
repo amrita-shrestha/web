@@ -52,6 +52,7 @@ export const getStore = function ({
   davProperties = [],
   publicLinkPassword = null,
   slogan = null
+  isOcis = true
 } = {}) {
   return createStore(Vuex.Store, {
     state: {
@@ -75,13 +76,19 @@ export const getStore = function ({
         }
       }),
       getToken: () => '',
-      isOcis: () => true,
+      isOcis: () => isOcis,
       homeFolder: () => '/'
+    },
+    actions: {
+      showMessage: jest.fn()
     },
     modules: {
       Files: {
         state: {
-          resource: null
+          resource: null,
+          currentFolder: currentFolder,
+          currentPage: currentPage,
+          filesPageLimit: 100
         },
         getters: {
           totalFilesCount: () => totalFilesCount,
@@ -100,7 +107,15 @@ export const getStore = function ({
           UPDATE_RESOURCE: (state, resource) => {
             state.resource = resource
           },
-          CLEAR_FILES_SEARCHED: () => {}
+          UPDATE_CURRENT_PAGE: jest.fn(),
+          SET_FILES_PAGE_LIMIT: jest.fn(),
+          CLEAR_FILES_SEARCHED: jest.fn(),
+          SELECT_RESOURCES: jest.fn(),
+          CLEAR_CURRENT_FILES_LIST: jest.fn()
+        },
+        actions: {
+          loadFiles: jest.fn(),
+          loadIndicators: jest.fn()
         },
         namespaced: true,
         modules: {
