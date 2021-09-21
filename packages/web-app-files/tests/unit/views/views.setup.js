@@ -51,7 +51,8 @@ export const getStore = function ({
   loginLogo = '',
   davProperties = [],
   publicLinkPassword = null,
-  slogan = null
+  slogan = null,
+  generalThemeName = '',
   isOcis = true
 } = {}) {
   return createStore(Vuex.Store, {
@@ -68,6 +69,7 @@ export const getStore = function ({
             login: loginLogo
           },
           general: {
+            name: generalThemeName,
             slogan: slogan
           }
         },

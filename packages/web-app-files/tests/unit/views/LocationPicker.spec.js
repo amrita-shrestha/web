@@ -33,6 +33,7 @@ const translateStub = 'translate-stub'
 
 const selectors = {
   selectionInfo: '.location-picker-selection-info',
+  currentHint: '[data-testid="location-picker-current-hint"]',
   cancelButton: '#location-picker-btn-cancel',
   confirmButton: '#location-picker-btn-confirm',
   filesView: '#files-view',
@@ -44,7 +45,7 @@ const selectors = {
 describe('LocationPicker', () => {
   // the function fires up wile route is changed and quickly sets loading to true
   // so needs to be mocked to get a loading wrapper
-  jest.spyOn(LocationPicker.methods, 'navigateToTarget').mockImplementation()
+  jest.spyOn(LocationPicker.methods, 'adjustTableHeaderPosition').mockImplementation()
 
   describe('files app bar', () => {
     it.each([
@@ -70,7 +71,7 @@ describe('LocationPicker', () => {
         action: 'random-action',
         item: '/😂/🔥'
       }
-    ])('should show location picker selection info according to route action and item', input => {
+    ])('should show location picker selection info according to route action and item', (input) => {
       const wrapper = getShallowWrapper({
         $route: getRoute({ action: input.action, item: input.item })
       })
@@ -82,16 +83,18 @@ describe('LocationPicker', () => {
     })
     it.each(['copy', 'move'])(
       'should show current hint according to the current route action',
-      action => {
+      (action) => {
         const wrapper = getShallowWrapper({ $route: getRoute({ action: action }) })
+        const currentHint = wrapper.find(selectors.currentHint)
 
-        expect(wrapper).toMatchSnapshot()
+        expect(currentHint.exists()).toBeTruthy()
+        expect(currentHint).toMatchSnapshot()
       }
     )
     describe('should display breadcrumb with items', () => {
       it.each(['parent/child', 'parent//child', '/parent/child', '/parent/child/'])(
         'if route params context is public',
-        input => {
+        (input) => {
           const route = getRoute({ context: 'public', item: input })
           const wrapper = getShallowWrapper({ $route: route })
           const breadcrumbItems = wrapper.find(breadcrumbStub).props().items
@@ -120,7 +123,7 @@ describe('LocationPicker', () => {
       )
       it.each(['parent/child', 'parent//child', '/parent/child', '/parent/child/'])(
         'if route params context is not public',
-        input => {
+        (input) => {
           const route = getRoute({ item: input })
           const wrapper = getShallowWrapper({ $route: route })
           const breadcrumbItems = wrapper.find(breadcrumbStub).props().items
@@ -163,7 +166,6 @@ describe('LocationPicker', () => {
 
         expect(cancelButton.exists()).toBeTruthy()
         expect(cancelButton.find(translateStub).exists()).toBeTruthy()
-        expect(cancelButton).toMatchSnapshot()
       })
       it('should call "leaveLocationPicker" method when clicked', async () => {
         const spyLeaveLocationPicker = jest.spyOn(LocationPicker.methods, 'leaveLocationPicker')
@@ -202,21 +204,22 @@ describe('LocationPicker', () => {
         expect(confirmButton.exists()).toBeTruthy()
         expect(confirmButton.attributes().disabled).toBe('true')
       })
-      it.each(['move', 'copy', 'anything else'])(
-        'should set button text according to current action',
-        action => {
-          const wrapper = getShallowWrapper({
-            store: createStore({ currentFolder: { canCreate: jest.fn(() => true) } }),
-            $route: getRoute({ action: action })
-          })
+      it.each([
+        { action: 'move', expectedText: 'Move here' },
+        { action: 'copy', expectedText: 'Paste here' },
+        { action: 'anything else', expectedText: 'Confirm' }
+      ])('should set button text according to current action', (input) => {
+        const wrapper = getShallowWrapper({
+          store: createStore({ currentFolder: { canCreate: jest.fn(() => true) } }),
+          $route: getRoute({ action: input.action })
+        })
 
-          const confirmButton = wrapper.find(selectors.confirmButton)
+        const confirmButton = wrapper.find(selectors.confirmButton)
 
-          expect(confirmButton.exists()).toBeTruthy()
-          expect(confirmButton.attributes().disabled).toBeUndefined()
-          expect(confirmButton).toMatchSnapshot()
-        }
-      )
+        expect(confirmButton.exists()).toBeTruthy()
+        expect(confirmButton.attributes().disabled).toBeUndefined()
+        expect(confirmButton.text()).toBe(input.expectedText)
+      })
       it('should call "confirmAction" method when clicked', async () => {
         const spyConfirmAction = jest.spyOn(LocationPicker.methods, 'confirmAction')
         const wrapper = getMountedWrapper({
@@ -226,16 +229,17 @@ describe('LocationPicker', () => {
 
         await confirmButton.trigger('click')
         expect(spyConfirmAction).toHaveBeenCalledTimes(1)
-        // TODO: should we add more tests ???
       })
     })
   })
 
   describe('files view', () => {
     describe('when the view is still loading', () => {
-      const wrapper = getShallowWrapper({ data: { loading: true } })
-      const filesView = wrapper.find(selectors.filesView)
-
+      let filesView
+      beforeEach(() => {
+        const wrapper = getShallowWrapper({ loading: true })
+        filesView = wrapper.find(selectors.filesView)
+      })
       it('should show list loader', () => {
         expect(filesView.find(listLoaderStub).exists()).toBeTruthy()
         expect(filesView.find(listLoaderStub)).toMatchSnapshot()
@@ -249,7 +253,6 @@ describe('LocationPicker', () => {
     })
     describe('when the view is not loading anymore', () => {
       const wrapper = getShallowWrapper({
-        data: { loading: false },
         store: createStore({ activeFiles: [] })
       })
       const filesView = wrapper.find(selectors.filesView)
@@ -267,7 +270,6 @@ describe('LocationPicker', () => {
         const store = createStore({ activeFiles: expectedResources })
         const route = getRoute({ resource: '/home/some-resource' })
         const wrapper = getShallowWrapper({
-          data: { loading: false },
           store: store,
           $route: route
         })
@@ -320,7 +322,7 @@ describe('LocationPicker', () => {
           }
         ])(
           'should set location item as disabled if not a folder or if its path is included in the active resource',
-          input => {
+          (input) => {
             const store = createStore({ activeFiles: [input] })
             const route = getRoute({ resource: '/home/some-resource' })
             const wrapper = getShallowWrapper({
@@ -413,20 +415,20 @@ describe('LocationPicker', () => {
     currentFolder = null,
     totalFilesCount = { files: null, folders: null },
     totalFilesSize = null,
-    currentPage = null
+    generalThemeName = ''
   } = {}) {
     return getStore({
       pages: pages,
-      activeFiles: activeFiles,
+      activeFilesCurrentPage: activeFiles,
       publicLinkPassword: publicLinkPassword,
-      currentPage: currentPage,
       currentFolder: currentFolder,
       totalFilesSize: totalFilesSize,
-      totalFilesCount: totalFilesCount
+      totalFilesCount: totalFilesCount,
+      generalThemeName: generalThemeName
     })
   }
 
-  function mountOptions(store, $route, data, stubs = defaultStubs) {
+  function mountOptions(store, $route, loading, stubs = defaultStubs) {
     return {
       localVue,
       store: store,
@@ -435,20 +437,23 @@ describe('LocationPicker', () => {
         $route,
         $router: router
       },
-      data() {
-        return data
-      }
+      setup: () => ({
+        navigateToTargetTask: {
+          isRunning: loading,
+          perform: jest.fn()
+        }
+      })
     }
   }
 
-  function getShallowWrapper({ store = createStore(), $route = getRoute(), data = {} } = {}) {
-    return shallowMount(component, mountOptions(store, $route, data))
+  function getShallowWrapper({ store = createStore(), $route = getRoute(), loading = false } = {}) {
+    return shallowMount(component, mountOptions(store, $route, loading))
   }
 
-  function getMountedWrapper({ store = createStore(), $route = getRoute(), data = {} } = {}) {
+  function getMountedWrapper({ store = createStore(), $route = getRoute(), loading = false } = {}) {
     return mount(
       component,
-      mountOptions(store, $route, data, {
+      mountOptions(store, $route, loading, {
         'oc-button': false,
         'list-info': true,
         pagination: true,
