@@ -682,7 +682,7 @@ Then(
   }
 )
 
-When('the user downloads a file of a previous version using the webUI', function() {
+When('the user downloads a file of a previous version using the webUI', function () {
   return client.page.FilesPageElement.versionsDialog().downloadFilePreviousVersion()
 })
 

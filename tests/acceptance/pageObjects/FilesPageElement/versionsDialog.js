@@ -22,7 +22,7 @@ module.exports = {
     /**
      * @returns {*}
      */
-     downloadFilePreviousVersion: function () {
+    downloadFilePreviousVersion: function () {
       return this.waitForElementVisible('@downloadPreviousVersion').click(
         '@downloadPreviousVersion'
       )
