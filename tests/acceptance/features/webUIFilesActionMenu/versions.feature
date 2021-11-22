@@ -76,6 +76,7 @@ Feature: Versions of a file
   @issue-ocis-2319
   Scenario: change the file content of a received shared file
     Given the setting "shareapi_auto_accept_share" of app "core" has been set to "no"
+    And the administrator has set the default folder for received shares to "Shares"
     And user "Brian" has been created with default attributes and without skeleton files
     And user "Brian" has created folder "simple-folder"
     And user "Brian" has created file "simple-folder/lorem.txt"
@@ -95,5 +96,5 @@ Feature: Versions of a file
     And user "Alice" has uploaded file with content "lorem content" to "lorem.txt"
     And user "Alice" has logged in using the webUI
     And the user browses to display the "versions" details of file "lorem.txt"
-    When the user downloads a file of a previous version using the webUI
+    When the user downloads a previous version of the file using the webUI
     Then as "Alice" the content of "lorem.txt" should be the same as the content of local file "lorem.txt"    
