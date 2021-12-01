@@ -11130,10 +11130,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"owncloud-design-system@npm:11.0.0":
-  version: 11.0.0
-  resolution: "owncloud-design-system@npm:11.0.0"
+"owncloud-design-system@npm:11.3.0-rc3":
+  version: 11.3.0-rc3
+  resolution: "owncloud-design-system@npm:11.3.0-rc3"
   peerDependencies:
+    "@popperjs/core": ^2.4.0
     filesize: ^8.0.0
     focus-trap: ^6.4.0
     focus-trap-vue: ^1.1.1
@@ -11141,14 +11142,14 @@ __metadata:
     luxon: ^2.0.2
     postcss-import: ^12.0.1
     postcss-url: ^9.0.0
-    tippy.js: ^6.3.1
+    tippy.js: ^6.3.7
     uikit: 3.5.16
     v-calendar: ^2.3.2
     vue: ^2.6.11
     vue-inline-svg: ^2.0.0
     vue-select: ^3.12.0
     webfontloader: ^1.6.28
-  checksum: 023ed8955fd0c2c71276b36d6bf295fde7a0243fc3e399799b3426ccc23d4813ca567de31b27dd7b51486901821022d6465ce15203c2ae329ecf8a39af66e738
+  checksum: a7f132e0ad382942175434a0ce87ff4d5659a42ab001eb8badff5cb037dc0b569d8218335ff3b60d610f6f6af021b9b1bc313a77aa4fea99fbbe1d23ebe78765
   languageName: node
   linkType: hard
 
@@ -15505,7 +15506,7 @@ typescript@^4.3.2:
     lodash-es: ^4.17.21
     luxon: ^2.0.0
     oidc-client: 1.11.5
-    owncloud-design-system: 11.0.0
+    owncloud-design-system: 11.3.0-rc3
     owncloud-sdk: 1.0.0-2296
     p-queue: ^6.1.1
     popper-max-size-modifier: ^0.2.0
