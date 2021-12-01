@@ -752,10 +752,11 @@ def beforePipelines(ctx):
            pipelinesDependsOn(yarnlint(ctx), yarnCache(ctx))
 
 def stagePipelines(ctx):
+    unit_test_pipelines = unitTests(ctx)
     smoke_pipelines = smokeTests(ctx)
     acceptance_pipelines = acceptance(ctx)
 
-    return smoke_pipelines + pipelinesDependsOn(acceptance_pipelines, smoke_pipelines)
+    return unit_test_pipelines + pipelinesDependsOn(smoke_pipelines, unit_test_pipelines) + pipelinesDependsOn(acceptance_pipelines, smoke_pipelines)
 
 def afterPipelines(ctx):
     return build(ctx) + notify()
