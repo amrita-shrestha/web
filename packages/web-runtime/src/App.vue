@@ -44,16 +44,28 @@
                 <oc-button
                   variation="inverse"
                   appearance="raw"
-                  class="web-sidebar-btn-close"
-                  :aria-label="$gettext('Close sidebar')"
+                  class="web-sidebar-btn-apps"
+                  :aria-label="$gettext('Toggle sidebar')"
                   @click="leftSidebarCollapsed = !leftSidebarCollapsed"
                 >
-                  <oc-icon :name="leftSidebarCollapsed ? 'chevron_right' : 'chevron_left'" />
+                  <oc-icon name="apps" />
                 </oc-button>
               </div>
             </template>
             <template #nav>
               <oc-list>
+                <oc-sidebar-nav-item
+                  :class="toggleSidebarButtonClass"
+                  >
+                  <oc-button
+                    variation="inverse"
+                    appearance="raw"
+                    :aria-label="$gettext('Toggle sidebar')"
+                    @click="leftSidebarCollapsed = !leftSidebarCollapsed"
+                    >
+                    <oc-icon size="large" :name="leftSidebarCollapsed ? 'chevron_right' : 'chevron_left'" />
+                  </oc-button>
+                </oc-sidebar-nav-item>
                 <oc-sidebar-nav-item
                   v-for="link in sidebarNavItems"
                   :key="link.route.path"
@@ -257,6 +269,10 @@ export default {
         bundle: 'profile',
         setting: 'language'
       })
+    },
+
+    toggleSidebarButtonClass() {
+      return this.leftSidebarCollapsed ? 'web-sidebar-btn-toggle-collapsed' : 'web-sidebar-btn-toggle-expanded oc-pr-s'
     }
   },
   watch: {
@@ -491,5 +507,20 @@ body,
   right: var(--oc-space-medium);
   top: var(--oc-space-medium);
   z-index: 3;
+}
+.web-sidebar-btn-apps {
+  position: absolute;
+  left: var(--oc-space-medium);
+  top: calc(var(--oc-space-medium) + 9px);
+  z-index: 3;
+}
+.web-sidebar-btn-toggle-expanded {
+  text-align: right;
+  float: right;
+  width: 100%;
+  display: block;
+}
+.web-sidebar-btn-toggle-collapsed {
+  text-align: center;
 }
 </style>
