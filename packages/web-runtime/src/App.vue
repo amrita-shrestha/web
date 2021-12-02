@@ -41,9 +41,15 @@
                 >
                   <oc-icon name="close" />
                 </oc-button>
-                <router-link ref="navigationSidebarLogo" to="/">
-                  <oc-logo :src="logoImage" :alt="sidebarLogoAlt" />
-                </router-link>
+                <oc-button
+                  variation="inverse"
+                  appearance="raw"
+                  class="web-sidebar-btn-close"
+                  :aria-label="$gettext('Close sidebar')"
+                  @click="leftSidebarCollapsed = !leftSidebarCollapsed"
+                >
+                  <oc-icon :name="leftSidebarCollapsed ? 'chevron_right' : 'chevron_left'" />
+                </oc-button>
               </div>
             </template>
             <template #nav>
@@ -54,6 +60,7 @@
                   :active="link.active"
                   :target="link.route.path"
                   :icon="link.icon || link.iconMaterial"
+                  :collapsed="leftSidebarCollapsed"
                 >
                   {{ link.name }}
                 </oc-sidebar-nav-item>
@@ -130,7 +137,8 @@ export default {
       appNavigationVisible: false,
       $_notificationsInterval: null,
       windowWidth: 0,
-      announcement: ''
+      announcement: '',
+      leftSidebarCollapsed: true
     }
   },
   computed: {
@@ -214,7 +222,9 @@ export default {
       if (this.appNavigationVisible) {
         return ''
       }
-
+      if(this.leftSidebarCollapsed){
+        return 'uk-visible@l oc-app-navigation-collapsed'
+      }
       return 'uk-visible@l'
     },
 
@@ -317,6 +327,9 @@ export default {
   methods: {
     ...mapActions(['fetchNotifications', 'deleteMessage']),
 
+    test() {
+      alert('hi')
+    },
     focusModal(component, event) {
       this.focus({
         revert: event === 'beforeDestroy'
@@ -433,6 +446,10 @@ body,
   position: relative;
   grid-area: main;
   overflow-y: auto;
+}
+
+.oc-app-navigation-collapsed {
+  width: auto !important;
 }
 
 .oc-app-navigation {
