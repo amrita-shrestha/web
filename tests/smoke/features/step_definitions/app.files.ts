@@ -184,7 +184,7 @@ When(
 )
 
 When(
-  '{string} creates new version(s) of the following file(s)',
+  '{string} creates a new version of the following file(s)',
   async function (this: World, stepUser: string, stepTable: DataTable): Promise<void> {
     const actor = this.actorContinent.get({ id: stepUser })
     const { allFiles: allFilesPage } = new FilesPage({ actor })
@@ -220,12 +220,12 @@ When(
 )
 
 Then(
-  /^"([^"]*)" ensures that the following (resource|resources) (exist|does not exist)$/,
+  /^"([^"]*)" should (see|not see) the following (resource|resources)$/,
   async function (
     this: World,
     stepUser: string,
-    _: string,
     actionType: string,
+    _: string,
     stepTable: DataTable
   ) {
     const actor = this.actorContinent.get({ id: stepUser })
@@ -237,9 +237,9 @@ Then(
     for (const resource of resources) {
       const resourceExist = await allFilesPage.resourceExist({ name: resource })
 
-      if (actionType === 'exist' && !resourceExist) {
+      if (actionType === 'see' && !resourceExist) {
         throw new Error(`resource wasn't found: "${resource}"`)
-      } else if (actionType === 'does not exist' && resourceExist) {
+      } else if (actionType === 'not see' && resourceExist) {
         throw new Error(`resource was found: "${resource}"`)
       }
 
@@ -249,7 +249,7 @@ Then(
 )
 
 Then(
-  '{string} ensures that the resource {string} has {int} version(s)',
+  '{string} should see that the resource {string} has {int} version(s)',
   async function (this: World, stepUser: string, resource: string, countOfVersion: number) {
     const actor = this.actorContinent.get({ id: stepUser })
     const { allFiles: allFilesPage } = new FilesPage({ actor })
@@ -305,7 +305,7 @@ When(
 )
 
 When(
-  '{string} removes following collaborator(s) from the share(s)',
+  '{string} removes the following collaborator(s) from the share(s)',
   async function (this: World, stepUser: string, stepTable: DataTable) {
     const actor = this.actorContinent.get({ id: stepUser })
     const { allFiles: allFilesPage } = new FilesPage({ actor })
