@@ -9,7 +9,7 @@
       :aria-label="ariaLabel"
       aria-describedby="oc-feedback-link-description"
     >
-      <oc-icon name="feedback" />
+      <oc-icon name="feedback" variation="inverse" />
     </oc-button>
     <p id="oc-feedback-link-description" class="oc-invisible-sr" v-text="description" />
   </div>

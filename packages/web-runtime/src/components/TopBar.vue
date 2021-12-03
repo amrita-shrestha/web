@@ -5,8 +5,7 @@
     :aria-label="$gettext('Top bar')"
   >
   <div class="gap-15 uk-flex uk-flex-middle uk-flex-between">
-    <applications-menu v-if="applicationsList.length > 0" :applications-list="applicationsList" />
-    <router-link ref="navigationSidebarLogo" to="/">
+    <router-link ref="navigationSidebarLogo" to="/" class="oc-ml-m">
       <oc-img :src="logoImage" :alt="sidebarLogoAlt" />
     </router-link>
   </div>
@@ -85,10 +84,14 @@ export default {
 }
 #oc-topbar {
   z-index: 2;
-  height: 80px;
+  height: 64px;
   img {
     margin: 0 !important;
-    height: 60px;
+    height: 42px;
+    image-rendering: auto;
+    image-rendering: crisp-edges;
+    image-rendering: pixelated;
+    image-rendering: -webkit-optimize-contrast;
   }
 }
 </style>

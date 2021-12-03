@@ -41,29 +41,19 @@
                 >
                   <oc-icon name="close" />
                 </oc-button>
-                <oc-button
-                  variation="inverse"
-                  appearance="raw"
-                  class="web-sidebar-btn-apps"
-                  :aria-label="$gettext('Toggle sidebar')"
-                  @click="leftSidebarCollapsed = !leftSidebarCollapsed"
-                >
-                  <oc-icon name="apps" />
-                </oc-button>
+                <applications-menu v-if="applicationsList.length > 0" :applications-list="applicationsList" />
               </div>
             </template>
             <template #nav>
               <oc-list>
-                <oc-sidebar-nav-item
-                  :class="toggleSidebarButtonClass"
-                  >
+                <oc-sidebar-nav-item :class="toggleSidebarButtonClass">
                   <oc-button
                     variation="inverse"
                     appearance="raw"
                     :aria-label="$gettext('Toggle sidebar')"
-                    @click="leftSidebarCollapsed = !leftSidebarCollapsed"
+                    @click="toggleSidebarButtonClick"
                     >
-                    <oc-icon size="large" :name="leftSidebarCollapsed ? 'chevron_right' : 'chevron_left'" />
+                    <oc-icon size="large" :name="toggleSidebarButtonIcon" />
                   </oc-button>
                 </oc-sidebar-nav-item>
                 <oc-sidebar-nav-item
@@ -136,13 +126,15 @@ import TopBar from './components/TopBar.vue'
 import MessageBar from './components/MessageBar.vue'
 import SkipTo from './components/SkipTo.vue'
 import { FocusTrap } from 'focus-trap-vue'
+import ApplicationsMenu from './components/ApplicationsMenu.vue'
 
 export default {
   components: {
     MessageBar,
     TopBar,
     SkipTo,
-    FocusTrap
+    FocusTrap,
+    ApplicationsMenu
   },
   data() {
     return {
@@ -273,6 +265,10 @@ export default {
 
     toggleSidebarButtonClass() {
       return this.leftSidebarCollapsed ? 'web-sidebar-btn-toggle-collapsed' : 'web-sidebar-btn-toggle-expanded oc-pr-s'
+    },
+
+    toggleSidebarButtonIcon() {
+      return this.leftSidebarCollapsed ? 'chevron_right' : 'chevron_left'
     }
   },
   watch: {
@@ -343,8 +339,8 @@ export default {
   methods: {
     ...mapActions(['fetchNotifications', 'deleteMessage']),
 
-    test() {
-      alert('hi')
+    toggleSidebarButtonClick() {
+      this.leftSidebarCollapsed = !this.leftSidebarCollapsed
     },
     focusModal(component, event) {
       this.focus({
@@ -428,6 +424,7 @@ export default {
 }
 </script>
 <style lang="scss">
+
 html,
 body,
 #web,
@@ -445,7 +442,8 @@ body,
   top: 0;
   height: 60px;
   z-index: 2;
-  background-color: var(--oc-color-background-default);
+  background-color: #202020;
+  margin-left: 0px !important;
 }
 
 .web-content-container {
@@ -513,6 +511,7 @@ body,
   left: var(--oc-space-medium);
   top: calc(var(--oc-space-medium) + 9px);
   z-index: 3;
+  margin-left: var(--oc-space-small);
 }
 .web-sidebar-btn-toggle-expanded {
   text-align: right;

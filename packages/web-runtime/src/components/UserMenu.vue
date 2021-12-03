@@ -5,7 +5,7 @@
       ref="menuButton"
       class="oc-topbar-personal uk-height-1-1 oc-pr-xs"
       appearance="raw"
-      variation="passive"
+      variation="inverse"
       :aria-label="$gettext('User Menu')"
     >
       <oc-grid flex>

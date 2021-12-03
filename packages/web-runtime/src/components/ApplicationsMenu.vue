@@ -5,10 +5,11 @@
       ref="menubutton"
       v-oc-tooltip="applicationSwitcherLabel"
       appearance="raw"
+      variation="inverse"
       class="oc-topbar-menu-burger"
       :aria-label="applicationSwitcherLabel"
     >
-      <oc-icon name="apps" class="uk-flex" />
+      <oc-icon name="apps" size="large" class="uk-flex" />
     </oc-button>
     <oc-drop
       ref="menu"
